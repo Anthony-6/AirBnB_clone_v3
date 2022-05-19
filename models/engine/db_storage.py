@@ -79,7 +79,7 @@ class DBStorage:
         '''Returns the object based on the class and its ID,
         or None if not found'''
         if cls is not None or id is not None:
-            fetch = "{}.{}".format(cls, id)
+            fetch = "{}.{}".format(cls.__name__, id)
             return self.all(cls).get(fetch)
         return None
 
