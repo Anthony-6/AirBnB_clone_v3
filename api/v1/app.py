@@ -12,6 +12,7 @@ app.register_blueprint(app_views)
 host = getenv('HBNB_API_HOST', '0.0.0.0')
 port = getenv('HBNB_API_PORT', '5000')
 
+
 @app.teardown_appcontext
 def tearitdown(exception):
     """This method remove the current SQLAlchemy Session"""
