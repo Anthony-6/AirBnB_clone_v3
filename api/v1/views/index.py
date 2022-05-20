@@ -22,10 +22,12 @@ def status():
 def countstorage():
     """count all element inside each class and return
        class and number of objet inside in json format"""
-    classes = {"amenity": storage.count(Amenity),
-               "city": storage.count(City),
-               "place": storage.count(Place),
-               "review": storage.count(Review),
-               "state": storage.count(State),
-               "user": storage.count(User)}
+    classes = {
+        "amenity": storage.count(Amenity),
+        "city": storage.count(City),
+        "place": storage.count(Place),
+        "review": storage.count(Review),
+        "state": storage.count(State),
+        "user": storage.count(User)
+    }
     return classes
