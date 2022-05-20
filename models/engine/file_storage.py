@@ -11,6 +11,7 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+import models
 
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -81,4 +82,7 @@ class FileStorage:
         '''Returns the number of objects in storage matching
         the given class. If no class is passed, returns the count
         of all objects in storage.'''
-        return len(self.all(cls))
+        if cls is None:
+            return len(models.storage.all())
+        return len(models.storage.all(cls))
+
