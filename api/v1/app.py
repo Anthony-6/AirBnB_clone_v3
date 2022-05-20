@@ -15,6 +15,6 @@ def tearitdown(exception):
 
 if __name__ == '__main__':
     if getenv('HBNB_API_HOST') and getenv('HBNB_API_PORT') is None:
-        app.run(host='0.0.0.0', port='5000', threaded=True)
+        app.run(host='0.0.0.0', port='5000')
     else:
-        app.run(host=getenv('HBNB_API_HOST'), port=getenv('HBNB_API_PORT'), threaded=True)
+        app.run(host=getenv('HBNB_API_HOST'), port=getenv('HBNB_API_PORT'))
