@@ -28,4 +28,4 @@ def countstorage():
                "review": storage.count(Review),
                "state": storage.count(State),
                "user": storage.count(User)}
-    return jsonify(classes)
+    return classes
