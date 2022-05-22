@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Create a new view for State objects that
+"""Create a new view for Amenitie objects that
 handles all default RESTFul API actions"""
 from api.v1.views import app_views
 from flask import request, abort, jsonify
@@ -30,7 +30,7 @@ def amenitiesWithId(amenity_id=None):
 
 
 @app_views.route('/amenities/', methods=['POST', 'GET'])
-def statesNoId():
+def AmenitiesNoId():
     """Methods that retrieves all methods for amenities without id"""
     if request.method == 'POST':
         if request.get_json() is None:
