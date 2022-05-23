@@ -11,19 +11,21 @@ from models import storage
 def statesWithId(state_id=None):
     """Methods that retrieves all methods for states with id"""
     stateId = storage.get(State, state_id)
-    if stateId is None:
-        abort(404, 'Not found')
-
     if request.method == 'GET':
+        if stateId is None:
+            abort(404, 'Not found')
         return jsonify(stateId.to_dict())
 
     if request.method == 'DELETE':
+        if stateId is None:
+            abort(404, 'Not found')
         stateId.delete()
         del stateId
         return jsonify({}), 200
 
     if request.method == 'PUT':
-        stateId = storage.get(State, state_id)
+        if stateId is None:
+            abort(404, 'Not found')
         toIgnore = ["id", "email", "created_at", "updated_it"]
         for key, value in request.get_json().items():
             if value not in toIgnore:
