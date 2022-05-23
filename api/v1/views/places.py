@@ -33,7 +33,7 @@ def placeWithId(city_id=None):
             return abort(400, 'Missing name')
         newCity = City(**transformers)
         newCity.save()
-        return jsonify(newCity.to_dict, 201)
+        return jsonify(newCity.to_dict), 201
 
 
 @app_views.route('/places/<places_id>', methods=['GET', 'DELETE', 'PUT'],
