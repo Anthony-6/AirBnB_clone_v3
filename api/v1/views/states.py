@@ -23,6 +23,11 @@ def statesWithId(state_id=None):
         return jsonify({}), 200
 
     if request.method == 'PUT':
+        stateId = storage.get(State, state_id)
+        toIgnore = ["id", "email", "created_at", "updated_it"]
+        for key, value in request.get_json().items():
+            if value not in toIgnore:
+                setattr(stateId, key, value)
         if request.get_json() is None:
             abort(400, 'Not a JSON')
         stateId.save()
