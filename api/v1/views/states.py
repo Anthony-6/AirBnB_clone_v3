@@ -7,7 +7,7 @@ from models.state import State
 from models import storage
 
 
-@app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'])
+@app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
 def statesWithId(state_id=None):
     """Methods that retrieves all methods for states with id"""
     stateId = storage.get(State, state_id)
@@ -36,7 +36,7 @@ def statesWithId(state_id=None):
         return jsonify(stateId.to_dict()), 201
 
 
-@app_views.route('/states/', methods=['POST', 'GET'])
+@app_views.route('/states', methods=['POST', 'GET'], strict_slashes=False)
 def statesNoId():
     """Methods that retrieves all methods for states without id"""
     if request.method == 'POST':
