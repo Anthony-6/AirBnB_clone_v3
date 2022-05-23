@@ -21,7 +21,7 @@ def statesWithId(state_id=None):
         if stateId is None:
             return abort(404)
         stateId.delete()
-        del stateId
+        storage.save()
         return jsonify({}), 200
 
     if request.method == 'PUT':
