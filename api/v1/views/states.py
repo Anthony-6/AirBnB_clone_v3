@@ -10,27 +10,28 @@ from models import storage
 @app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'])
 def statesWithId(state_id=None):
     """Methods that retrieves all methods for states with id"""
+    transformers = request.get_json()
     stateId = storage.get(State, state_id)
     if request.method == 'GET':
         if stateId is None:
-            abort(404, 'Not found')
+            abort(404)
         return jsonify(stateId.to_dict())
 
     if request.method == 'DELETE':
         if stateId is None:
-            abort(404, 'Not found')
+            abort(404)
         stateId.delete()
         del stateId
         return jsonify({}), 200
 
     if request.method == 'PUT':
         if stateId is None:
-            abort(404, 'Not found')
+            abort(404)
         toIgnore = ["id", "created_at", "updated_it"]
-        for key, value in request.get_json().items():
+        for key, value in transformers.items():
             if value not in toIgnore:
                 setattr(stateId, key, value)
-        if request.get_json() is None:
+        if transformers is None:
             abort(400, 'Not a JSON')
         stateId.save()
         return jsonify(stateId.to_dict(), 200)
@@ -39,12 +40,13 @@ def statesWithId(state_id=None):
 @app_views.route('/states/', methods=['POST', 'GET'])
 def statesNoId():
     """Methods that retrieves all methods for states without id"""
+    transformers = request.get_json()
     if request.method == 'POST':
-        if request.get_json() is None:
+        if transformers is None:
             abort(400, 'Not a JSON')
-        if request.get_json().get('name') is None:
+        if transformers.get('name') is None:
             abort(400, 'Missing name')
-        newState = State(**request.get_json())
+        newState = State(**transformers)
         newState.save()
         return jsonify(newState.to_dict()), 201
 
