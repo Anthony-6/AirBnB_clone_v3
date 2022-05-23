@@ -21,7 +21,7 @@ def placeWithId(city_id=None):
         for city in storage.all(City).values():
             if city.id == city_id:
                 list_place = [place.to_dict() for place in city.places]
-        return jsonify(list_place.to_dict())
+        return jsonify(list_place)
 
     if request.method == 'POST':
         if cityId is None:
