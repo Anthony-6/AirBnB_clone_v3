@@ -51,7 +51,7 @@ def usersNoId():
             return abort('Missing password')
         newUser = User(**request.get_json())
         newUser.save()
-        return jsonify(newUser.to_dict()), 200
+        return jsonify(newUser.to_dict()), 201
 
     if request.method == 'GET':
         """Retrieves get method for all users"""
