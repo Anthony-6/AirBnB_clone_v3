@@ -6,6 +6,7 @@ from api.v1.views import app_views
 from flask import request, abort, jsonify
 from models.review import Review
 from models.place import Place
+from models.city import City
 from models.user import User
 from models import storage
 
@@ -27,29 +28,22 @@ def get_reviews(place_id):
                  strict_slashes=False)
 def reviewsWithId(review_id=None):
     """Methods that retrieves all methods for reviews with id"""
+    review = storage.get(Review, review_id)
+    if review is None:
+        return abort(404)
 
     if request.method == 'GET':
         """Retrieves a review of a given review_id"""
-        for review in storage.all(Review).values():
-            if review.id == review_id:
-                return jsonify(review.to_dict())
-        return abort(404)
+        return jsonify(review.to_dict())
 
     if request.method == 'DELETE':
-        """Deletes a review of a given review_id """
-        for review in storage.all(Review).values():
-            if review.id == review_id:
-                review.delete()
-                storage.save()
-                return jsonify({})
-        return abort(404)
+        """Deletes a review of a given review_id"""
+        review.delete()
+        storage.save()
+        return jsonify({})
 
     if request.method == 'PUT':
         """Update an review of a given review_id"""
-        review = storage.get(Review, review_id)
-        if review is None:
-            return abort(404)
-
         r = request.get_json()
         if r is None:
             abort(400, 'Not a JSON')
@@ -71,13 +65,15 @@ def post_review(place_id):
     r = request.get_json()
     if r is None:
         return abort(400, 'Not a JSON')
-    user = storage.get(User, params['user_id'])
+    if r.get('user_id') is None:
+        return abort(400, "Missing user_id")
+    user = storage.get(User, r['user_id'])
     if user is None:
         return abort(404)
 
     if r.get('text') is None:
         return abort(400, 'Missing text')
-    r['place_id'] = place.id
+    r['place_id'] = place_id
     new = Review(**r)
     new.save()
     return jsonify(new.to_dict()), 201
