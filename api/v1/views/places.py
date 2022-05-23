@@ -27,7 +27,7 @@ def placeWithId(city_id=None):
         if cityId is None:
             return abort(404)
         if transformers is None:
-            return abort(404, 'Not a JSON')
+            return abort(400, 'Not a JSON')
         if transformers.get('user_id'):
             return abort(400, 'Missing user_id')
         if transformers.get('name'):
@@ -60,7 +60,7 @@ def placesId(places_id):
             if value not in toIgnore:
                 setattr(placeId, key, value)
         placeId.save()
-        return jsonify(placeId.to_dict()), 200
+        return jsonify(placeId.to_dict())
 
     if request.method == 'GET':
         allPlace = storage.all(Place)
