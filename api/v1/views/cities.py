@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """
-This is the module for cities
+Module for cities.py
 """
 
 from api.v1.views import app_views
 from flask import request, abort, jsonify
-from models.state import State
+from models.city import City
 from models import storage
 
 
