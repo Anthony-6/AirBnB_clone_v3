@@ -1,47 +1,71 @@
 #!/usr/bin/python3
-"""Create a new view for place objects that
+"""Create a new view for State objects that
 handles all default RESTFul API actions"""
 from api.v1.views import app_views
 from flask import request, abort, jsonify
 from models.place import Place
+from models.city import City
+from models.state import State
 from models import storage
 
 
-@app_views.route('/places/<place_id>', methods=['GET', 'DELETE', 'PUT'])
-def placesWithId(place_id=None):
-    """Methods that retrieves all methods for places with id"""
-    placeId = storage.get(Place, place_id)
-    if placeId is None:
-        abort(404, 'Not found')
-
+@app_views.route('/cities/<city_id>/places', methods=['GET', 'POST'],
+                 strict_slashes=False)
+def placeWithId(city_id=None):
+    """Methods that retrieves all methods for states with id"""
+    cityId = storage.get(City, city_id)
+    transformers = request.get_json()
     if request.method == 'GET':
-        return jsonify(placeId.to_dict())
+        if cityId is None:
+            return abort(404)
+        for state in storage.all(State).values():
+            for place in storage.all(Place).values():
+                if place.id == city_id:
+                    list_place = [place.to_dict() for place in state.
+                                  cities.
+                                  places]
+        return jsonify(list_place.to_dict())
 
+    if request.method == 'POST':
+        if cityId is None:
+            return abort(404)
+        if transformers is None:
+            return abort(404, 'Not a JSON')
+        if transformers.get('user_id'):
+            return abort(400, 'Missing user_id')
+        if transformers.get('name'):
+            return abort(400, 'Missing name')
+        newCity = City(**transformers)
+        newCity.save()
+        return jsonify(newCity.to_dict, 201)
+
+
+@app_views.route('/places/<places_id>', methods=['GET', 'DELETE', 'PUT'],
+                 strict_slashes=False)
+def placesId(places_id):
+    """Methods that retrieves all methods for place without id"""
+    placeId = storage.get(Place, places_id)
+    transformers = request.get_json()
     if request.method == 'DELETE':
+        if Place is None:
+            return abort(404)
         placeId.delete()
-        del placeId
-        return jsonify({}), 200
+        storage.save()
+        return jsonify({})
 
     if request.method == 'PUT':
-        if request.get_json() is None:
-            abort(400, 'Not a JSON')
+        if placeId is None:
+            return abort(404)
+        if transformers is None:
+            return abort(404, 'Not a JSON')
+        toIgnore = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
+        for key, value in transformers.items():
+            if value not in toIgnore:
+                setattr(placeId, key, value)
         placeId.save()
-        return jsonify(placeId.to_dict())
-
-
-@app_views.route('/places/', methods=['POST', 'GET'])
-def placesNoId():
-    """Methods that retrieves all methods for places without id"""
-    if request.method == 'POST':
-        if request.get_json() is None:
-            abort(400, 'Not a JSON')
-        if request.get_json().get('name') is None:
-            abort(400, 'Missing name')
-        newPlace = Place(**request.get_json())
-        newPlace.save()
-        return jsonify(newPlace.to_dict()), 200
+        return jsonify(placeId.to_dict()), 200
 
     if request.method == 'GET':
         allPlace = storage.all(Place)
-        allPlace = [allObject.to_dict() for allObject in allPlace.values()]
-        return jsonify(allPlace)
+        place = [allObject.to_dict() for allObject in allPlace.values()]
+        return jsonify(place)
