@@ -2,7 +2,7 @@
 """Create a new view for State objects that
 handles all default RESTFul API actions"""
 from api.v1.views import app_views
-from flask import request, abort, jsonify
+from flask import request, abort, jsonify, response
 from models.state import State
 from models import storage
 
@@ -15,14 +15,14 @@ def statesWithId(state_id=None):
     if request.method == 'GET':
         if stateId is None:
             abort(404)
-        return jsonify(stateId.to_dict())
+        return response(jsonify(stateId.to_dict()), status=201)
 
     if request.method == 'DELETE':
         if stateId is None:
             abort(404)
         stateId.delete()
         del stateId
-        return jsonify({}), 200
+        return response(jsonify(stateId.to_dict()), status=200)
 
     if request.method == 'PUT':
         if stateId is None:
@@ -34,7 +34,7 @@ def statesWithId(state_id=None):
         if transformers is None:
             abort(400, 'Not a JSON')
         stateId.save()
-        return jsonify(stateId.to_dict(), 200)
+        return response(jsonify(stateId.to_dict()), status=201)
 
 
 @app_views.route('/states/', methods=['POST', 'GET'])
@@ -48,9 +48,9 @@ def statesNoId():
             abort(400, 'Missing name')
         newState = State(**transformers)
         newState.save()
-        return jsonify(newState.to_dict()), 201
+        return response(jsonify(newState.to_dict()), status=201)
 
     if request.method == 'GET':
         allState = storage.all(State)
         allState = [allObject.to_dict() for allObject in allState.values()]
-        return jsonify(allState)
+        return jsonify(allState.to_dict())
