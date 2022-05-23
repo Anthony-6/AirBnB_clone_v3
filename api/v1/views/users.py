@@ -48,7 +48,7 @@ def usersNoId():
         if request.get_json().get('email') is None:
             return abort(400, 'Missing email')
         if request.get_json().get('password') is None:
-            return abort('Missing password')
+            return abort(400, 'Missing password')
         newUser = User(**request.get_json())
         newUser.save()
         return jsonify(newUser.to_dict()), 201
