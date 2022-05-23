@@ -5,7 +5,6 @@ from api.v1.views import app_views
 from flask import request, abort, jsonify
 from models.place import Place
 from models.city import City
-from models.state import State
 from models import storage
 
 
@@ -54,13 +53,13 @@ def placesId(places_id):
         if placeId is None:
             return abort(404)
         if transformers is None:
-            return abort(404, 'Not a JSON')
+            return abort(400, 'Not a JSON')
         toIgnore = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
         for key, value in transformers.items():
             if value not in toIgnore:
                 setattr(placeId, key, value)
         placeId.save()
-        return jsonify(placeId.to_dict())
+        return jsonify(placeId.to_dict()), 200
 
     if request.method == 'GET':
         if placeId is None:
