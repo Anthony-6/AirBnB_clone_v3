@@ -13,19 +13,19 @@ def statesWithId(state_id=None):
     stateId = storage.get(State, state_id)
     if request.method == 'GET':
         if stateId is None:
-            abort(404, 'Not found')
+            abort(404)
         return jsonify(stateId.to_dict())
 
     if request.method == 'DELETE':
         if stateId is None:
-            abort(404, 'Not found')
+            abort(404)
         stateId.delete()
         del stateId
-        return response(jsonify({}), status=200)
+        return jsonify({}), 200
 
     if request.method == 'PUT':
         if stateId is None:
-            abort(404, 'Not found')
+            abort(404)
         toIgnore = ["id", "created_at", "updated_it"]
         for key, value in request.get_json().items():
             if value not in toIgnore:
@@ -33,7 +33,7 @@ def statesWithId(state_id=None):
         if request.get_json() is None:
             abort(400, 'Not a JSON')
         stateId.save()
-        return response(jsonify(stateId.to_dict()), status=201)
+        return jsonify(stateId.to_dict()), 201
 
 
 @app_views.route('/states/', methods=['POST', 'GET'])
@@ -46,9 +46,9 @@ def statesNoId():
             abort(400, 'Missing name')
         newState = State(**request.get_json())
         newState.save()
-        return response(jsonify(newState.to_dict()), status=201)
+        return jsonify(newState.to_dict()), 201
 
     if request.method == 'GET':
         allState = storage.all(State)
         allState = [allObject.to_dict() for allObject in allState.values()]
-        return response(jsonify(allState), status=200)
+        return jsonify(allState), 200
