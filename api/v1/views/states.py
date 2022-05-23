@@ -34,7 +34,7 @@ def statesWithId(state_id=None):
             if value not in toIgnore:
                 setattr(stateId, key, value)
         stateId.save()
-        return jsonify(stateId.to_dict()), 201
+        return jsonify(stateId.to_dict()), 200
 
 
 @app_views.route('/states', methods=['POST', 'GET'], strict_slashes=False)
