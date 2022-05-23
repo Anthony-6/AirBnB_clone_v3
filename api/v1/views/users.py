@@ -38,16 +38,15 @@ def usersWithId(user_id=None):
         return jsonify(userId.to_dict()), 200
 
 
-@app_views.route('/users', methods=['POST', 'GET'],
-                 strict_slashes=False)
+@app_views.route('/users', methods=['POST', 'GET'], strict_slashes=False)
 def usersNoId():
     """Methods that retrieves all methods for users without id"""
     if request.method == 'POST':
         """Create a new user"""
         if request.get_json() is None:
-            abort(400, 'Not a JSON')
+            return abort(400, 'Not a JSON')
         if request.get_json().get('name') is None:
-            abort(400, 'Missing name')
+            return abort(400, 'Missing name')
         newUser = User(**request.get_json())
         newUser.save()
         return jsonify(newUser.to_dict()), 201
