@@ -18,12 +18,9 @@ def placeWithId(city_id=None):
     if request.method == 'GET':
         if cityId is None:
             return abort(404)
-        for state in storage.all(State).values():
-            for place in storage.all(Place).values():
-                if place.id == city_id:
-                    list_place = [place.to_dict() for place in state.
-                                  cities.
-                                  places]
+        for city in storage.all(City).values():
+            if city.id == city_id:
+                list_place = [place.to_dict() for place in city.places]
         return jsonify(list_place.to_dict())
 
     if request.method == 'POST':
