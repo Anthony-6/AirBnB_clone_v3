@@ -32,16 +32,16 @@ def placeWithId(city_id=None):
             return abort(400, 'Missing user_id')
         if transformers.get('name'):
             return abort(400, 'Missing name')
-        newCity = City(**transformers)
-        newCity.save()
-        return jsonify(newCity.to_dict, 201)
+        newPlace = Place(**transformers)
+        newPlace.save()
+        return jsonify(newPlace.to_dict, 201)
 
 
 @app_views.route('/places/<places_id>', methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
-def placesId(places_id):
+def placesId(place_id):
     """Methods that retrieves all methods for place without id"""
-    placeId = storage.get(Place, places_id)
+    placeId = storage.get(Place, place_id)
     transformers = request.get_json()
     if request.method == 'DELETE':
         if Place is None:
@@ -63,6 +63,7 @@ def placesId(places_id):
         return jsonify(placeId.to_dict()), 200
 
     if request.method == 'GET':
-        allPlace = storage.all(Place)
-        place = [allObject.to_dict() for allObject in allPlace.values()]
-        return jsonify(place)
+        placeId = storage.all(Place, place_id)
+        if placeId is None:
+            return abort(404)
+        return jsonify(placeId.to_dict())
