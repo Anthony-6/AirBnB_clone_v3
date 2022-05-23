@@ -5,7 +5,6 @@ from api.v1.views import app_views
 from flask import request, abort, jsonify
 from models.place import Place
 from models.city import City
-from models.state import State
 from models import storage
 
 
@@ -18,19 +17,16 @@ def placeWithId(city_id=None):
     if request.method == 'GET':
         if cityId is None:
             return abort(404)
-        for state in storage.all(State).values():
-            for place in storage.all(Place).values():
-                if place.id == city_id:
-                    list_place = [place.to_dict() for place in state.
-                                  cities.
-                                  places]
-        return jsonify(list_place.to_dict())
+        for city in storage.all(City).values():
+            if city.id == city_id:
+                list_place = [place.to_dict() for place in city.places]
+        return jsonify(list_place)
 
     if request.method == 'POST':
         if cityId is None:
             return abort(404)
         if transformers is None:
-            return abort(404, 'Not a JSON')
+            return abort(400, 'Not a JSON')
         if transformers.get('user_id'):
             return abort(400, 'Missing user_id')
         if transformers.get('name'):
@@ -57,7 +53,7 @@ def placesId(places_id):
         if placeId is None:
             return abort(404)
         if transformers is None:
-            return abort(404, 'Not a JSON')
+            return abort(400, 'Not a JSON')
         toIgnore = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
         for key, value in transformers.items():
             if value not in toIgnore:
@@ -66,6 +62,7 @@ def placesId(places_id):
         return jsonify(placeId.to_dict()), 200
 
     if request.method == 'GET':
+        if placeId is None:
+            return abort(404)
         allPlace = storage.all(Place)
-        place = [allObject.to_dict() for allObject in allPlace.values()]
-        return jsonify(place)
+        return jsonify(allPlace.to_dict())
