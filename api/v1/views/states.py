@@ -13,19 +13,19 @@ def statesWithId(state_id=None):
     stateId = storage.get(State, state_id)
     if request.method == 'GET':
         if stateId is None:
-            abort(404)
+            abort(404, 'Not found')
         return jsonify(stateId.to_dict())
 
     if request.method == 'DELETE':
         if stateId is None:
-            abort(404)
+            abort(404, 'Not found')
         stateId.delete()
         del stateId
         return response(jsonify({}), status=200)
 
     if request.method == 'PUT':
         if stateId is None:
-            abort(404)
+            abort(404, 'Not found')
         toIgnore = ["id", "created_at", "updated_it"]
         for key, value in request.get_json().items():
             if value not in toIgnore:
