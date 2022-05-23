@@ -30,7 +30,7 @@ def usersWithId(user_id=None):
         """Update an user of a given user_id"""
         if request.get_json() is None:
             return abort(400, 'Not a JSON')
-        toIgnore = ["id", "created_at", "updated_it"]
+        toIgnore = ["id", "email", "created_at", "updated_it"]
         for key, value in request.get_json().items():
             if value not in toIgnore:
                 setattr(userId, key, value)
