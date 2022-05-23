@@ -63,7 +63,6 @@ def placesId(place_id):
         return jsonify(placeId.to_dict()), 200
 
     if request.method == 'GET':
-        placeId = storage.all(Place, place_id)
-        if placeId is None:
-            return abort(404)
-        return jsonify(placeId.to_dict())
+        allPlace = storage.all(Place)
+        place = [allObject.to_dict() for allObject in allPlace.values()]
+        return jsonify(place)
