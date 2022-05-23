@@ -1,29 +1,27 @@
 #!/usr/bin/python3
-"""Create a new view for State objects that handles all default RESTFul
-API actions"""
-
+"""Create a new view for State objects that
+handles all default RESTFul API actions"""
 from api.v1.views import app_views
 from flask import request, abort, jsonify
 from models.state import State
 from models import storage
 
 
-@app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'])
+@app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'],
+                 strict_slashes=False)
 def statesWithId(state_id=None):
     """Methods that retrieves all methods for states with id"""
-    if state_id is None:
-        return abort(404)
-    stateId = storage.get("State", state_id)
-
+    stateId = storage.get(State, state_id)
     if request.method == 'GET':
         if stateId is None:
             return abort(404)
-        return jsonify(stateId.to_json())
+        return jsonify(stateId.to_dict())
 
     if request.method == 'DELETE':
         if stateId is None:
             return abort(404)
-        storage.delete(sategeId)
+        stateId.delete()
+        del stateId
         return jsonify({}), 200
 
     if request.method == 'PUT':
@@ -36,10 +34,10 @@ def statesWithId(state_id=None):
         if request.get_json() is None:
             return abort(400, 'Not a JSON')
         stateId.save()
-        return jsonify(stateId.to_json()), 201
+        return jsonify(stateId.to_dict()), 201
 
 
-@app_views.route('/states', methods=['POST', 'GET'])
+@app_views.route('/states', methods=['POST', 'GET'], strict_slashes=False)
 def statesNoId():
     """Methods that retrieves all methods for states without id"""
     if request.method == 'POST':
@@ -49,9 +47,9 @@ def statesNoId():
             return abort(400, 'Missing name')
         newState = State(**request.get_json())
         newState.save()
-        return jsonify(newState.to_json()), 201
+        return jsonify(newState.to_dict()), 201
 
     if request.method == 'GET':
-        Stock = storage.all("State")
-        allState = [allObject.to_json() for allObject in Stock.values()]
-        return jsonify(allState)
+        allState = storage.all(State)
+        state = list(allObject.to_dict() for allObject in allState.values())
+        return jsonify(state)
