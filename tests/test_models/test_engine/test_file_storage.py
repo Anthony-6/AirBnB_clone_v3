@@ -115,7 +115,6 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(json.loads(string), json.loads(js))
 
 
-
 @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
 class TestFileStorageGetCount(unittest.TestCase):
     """Tests for get and count methods"""
