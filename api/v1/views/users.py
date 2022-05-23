@@ -45,11 +45,13 @@ def usersNoId():
         """Create a new user"""
         if request.get_json() is None:
             return abort(400, 'Not a JSON')
-        if request.get_json().get('name') is None:
-            return abort(400, 'Missing name')
+        if request.get_json().get('email') is None:
+            return abort(400, 'Missing email')
+        if request.get_json().get('password') is None:
+            return abort('Missing password')
         newUser = User(**request.get_json())
         newUser.save()
-        return jsonify(newUser.to_dict()), 201
+        return jsonify(newUser.to_dict()), 200
 
     if request.method == 'GET':
         """Retrieves get method for all users"""
