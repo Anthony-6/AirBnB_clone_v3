@@ -26,7 +26,7 @@ def get_reviews(place_id):
 
 @app_views.route('/reviews/<review_id>', methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
-def reviewsWithId(review_id=None):
+def reviewsWithId(review_id):
     """Methods that retrieves all methods for reviews with id"""
     review = storage.get(Review, review_id)
     if review is None:
@@ -49,7 +49,7 @@ def reviewsWithId(review_id=None):
             abort(400, 'Not a JSON')
         toIgnore = ["id", "created_at", "updated_it", "user_id", "place_id"]
         for key, value in r.items():
-            if value not in toIgnore:
+            if key not in toIgnore:
                 setattr(review, key, value)
         review.save()
         return jsonify(review.to_dict())
