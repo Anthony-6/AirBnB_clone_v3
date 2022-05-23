@@ -5,6 +5,7 @@ actions"""
 from api.v1.views import app_views
 from flask import request, abort, jsonify
 from models.place import Place
+from models.user import User
 from models.city import City
 from models import storage
 
@@ -17,7 +18,7 @@ def placeWithId(city_id=None):
         """Retrieves get method for all place"""
         for city in storage.all(City).values():
             if city.id == city_id:
-                places_list = []
+                place_list = []
                 for place in city.places:
                     place_list.append(place.to_dict())
                 return jsonify(place_list)
