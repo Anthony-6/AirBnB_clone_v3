@@ -5,6 +5,7 @@ from api.v1.views import app_views
 from flask import request, abort, jsonify
 from models.place import Place
 from models.city import City
+from models.user import User
 from models import storage
 
 
@@ -29,11 +30,15 @@ def placeWithId(city_id=None):
             return abort(400, 'Not a JSON')
         if transformers.get('user_id'):
             return abort(400, 'Missing user_id')
+        user = transformers.get(User, transformers['user_id'])
+        if user is None:
+            return abort(404)
         if transformers.get('name'):
             return abort(400, 'Missing name')
+        transformers['city_id'] = city_id
         newCity = City(**transformers)
         newCity.save()
-        return jsonify(newCity.to_dict), 201
+        return jsonify(newCity.to_dict()), 201
 
 
 @app_views.route('/places/<places_id>', methods=['GET', 'DELETE', 'PUT'],
