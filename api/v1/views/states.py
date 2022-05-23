@@ -7,7 +7,8 @@ from models.state import State
 from models import storage
 
 
-@app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
+@app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'],
+                 strict_slashes=False)
 def statesWithId(state_id=None):
     """Methods that retrieves all methods for states with id"""
     stateId = storage.get(State, state_id)
