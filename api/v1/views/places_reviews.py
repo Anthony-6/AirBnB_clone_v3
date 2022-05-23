@@ -46,7 +46,7 @@ def reviewsWithId(review_id):
         """Update an review of a given review_id"""
         r = request.get_json()
         if r is None:
-            abort(400, 'Not a JSON')
+            return abort(400, 'Not a JSON')
         toIgnore = ["id", "created_at", "updated_it", "user_id", "place_id"]
         for key, value in r.items():
             if key not in toIgnore:
@@ -62,18 +62,17 @@ def post_review(place_id):
     place = storage.get(Place, place_id)
     if place is None:
         return abort(404)
-    r = request.get_json()
-    if r is None:
-        return abort(400, 'Not a JSON')
-    if r.get('user_id') is None:
-        return abort(400, "Missing user_id")
-    user = storage.get(User, r['user_id'])
+    params = request.get_json()
+    if params is None:
+        abort(400, "Not a JSON")
+    if params.get("user_id") is None:
+        abort(400, "Missing user_id")
+    user = storage.get(User, params['user_id'])
     if user is None:
         return abort(404)
-
-    if r.get('text') is None:
-        return abort(400, 'Missing text')
-    r['place_id'] = place_id
-    new = Review(**r)
+    if params.get("text") is None:
+        abort(400, "Missing text")
+    params['place_id'] = place_id
+    new = Review(**params)
     new.save()
     return jsonify(new.to_dict()), 201
