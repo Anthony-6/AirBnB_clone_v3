@@ -50,5 +50,5 @@ def statesNoId():
 
     if request.method == 'GET':
         allState = storage.all(State)
-        state = [allObject.to_dict() for allObject in allState.values()]
+        state = list(allObject.to_dict() for allObject in allState.values())
         return jsonify(state)
