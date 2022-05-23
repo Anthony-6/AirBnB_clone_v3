@@ -47,7 +47,7 @@ def placesId(places_id):
             return abort(404)
         placeId.delete()
         storage.save()
-        return jsonify({})
+        return jsonify({}), 200
 
     if request.method == 'PUT':
         if placeId is None:
