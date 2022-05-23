@@ -62,17 +62,17 @@ def post_review(place_id):
     place = storage.get(Place, place_id)
     if place is None:
         return abort(404)
-    params = request.get_json()
-    if params is None:
+    r = request.get_json()
+    if r is None:
         abort(400, "Not a JSON")
-    if params.get("user_id") is None:
+    if r.get("user_id") is None:
         abort(400, "Missing user_id")
-    user = storage.get(User, params['user_id'])
+    user = storage.get(User, r['user_id'])
     if user is None:
         return abort(404)
-    if params.get("text") is None:
+    if r.get("text") is None:
         abort(400, "Missing text")
-    params['place_id'] = place_id
-    new = Review(**params)
+    r['place_id'] = place_id
+    new = Review(**r)
     new.save()
     return jsonify(new.to_dict()), 201
